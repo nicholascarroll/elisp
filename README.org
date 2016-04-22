@@ -1,0 +1,4 @@
+These are addons for the venerable Emacs
+** bible.el
+This helps when note taking in sermons or editing biblical commentaries.
+Looks up or insert a passage. Requires Sword including Diatheke.
