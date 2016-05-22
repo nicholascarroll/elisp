@@ -133,18 +133,7 @@
 
 (provide 'bible)
 (define-minor-mode bible-mode
-  "Toggle bible-mode.
-
-     With no argument, this command toggles the mode.  Non-null
-     prefix argument turns on the mode.  Null prefix argument
-     turns off the mode.
-     
-     When bible-mode is enabled, several keybindings are made
-     to insert bible passages by several kinds of search and by
-     reference.
-
-     Also, the variable diatheke-bible is set to the name of the
-     alphabetically first diatheke module."
+  "Toggle bible-mode."
   
   ;; The initial value:
   :init-value nil
