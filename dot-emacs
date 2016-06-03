@@ -1,0 +1,96 @@
+(require 'package)
+(add-to-list 'package-archives
+	     '("melpa" . "https://melpa.org/packages/"))
+;(add-to-list 'package-archives
+;             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(add-to-list 'load-path "~/.emacs.d/misc")
+(package-initialize)
+(setq python-shell-interpreter "ipython"
+      python-shell-interpreter-args "-i")
+(require 'hideshow-org)
+
+(require 'fill-column-indicator)
+
+(eval-after-load "org"
+  '(require 'ox-md nil t))
+(add-hook `org-mode-hook 'turn-on-visual-line-mode)
+
+
+;; Org-babel active languages
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t))) 
+(setq org-confirm-babel-evaluate nil)   ;don't confirm code block evals in org
+
+(global-set-key (kbd "C-c o") 'org-mode)
+(global-set-key (kbd "C-c b") 'bible-mode)
+(setq diatheke-bible "WEB") 
+(require 'bible)
+
+(prefer-coding-system 'utf-8)
+
+;;python autocompletion and doc lookup
+(add-hook 'python-mode-hook 'jedi:setup)
+(setq jedi:setup-keys t) ;this sets the default keys, which are:
+;; <C-tab> : = jedi:key-complete
+;; Complete code at point. (jedi:complete)
+;; C-. : = jedi:key-goto-definition
+;; Goto the definition of the object at point. (jedi:goto-definition)
+;; C-c d : = jedi:key-show-doc
+;; Goto the definition of the object at point. (jedi:show-doc)
+;; C-c r : = jedi:key-related-names
+;; Find related names of the object at point. (helm-jedi-related-names / anything-jedi-related-names)
+(add-hook 'python-mode-hook 'fci-mode)
+(setq fci-rule-column 80)
+;(add-hook 'python-mode-hook 'hs-org/minor-mode) ;doesn't work properly!
+
+
+;;folding for nXML mode
+(require 'hideshow)
+(require 'sgml-mode)
+(require 'nxml-mode)
+
+ (add-to-list 'hs-special-modes-alist
+                  '(nxml-mode
+ 		 "<!--\\|<[^/>]*[^/]>"
+ 		 "-->\\|</[^/>]*[^/]>"
+
+		 "<!--"
+ 		 sgml-skip-tag-forward
+ 		 nil))
+
+(add-hook 'nxml-mode-hook 'hs-minor-mode) ;using hs-org instead
+(add-hook 'nxml-mode-hook 'hs-org/minor-mode);for the tab cycling
+
+;(put 'dired-find-alternate-file 'disabled nil)
+
+
+(defun night-mode ()
+  (interactive)
+  (save-excursion
+    (load-theme 'wombat)))
+(global-set-key (kbd "C-c w") 'night-mode)
+
+(add-to-list 'auto-mode-alist '("\\.fountain$" . fountain-mode))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ac-auto-start nil)
+ '(column-number-mode t)
+ '(cua-mode t nil (cua-base))
+ '(fringe-mode 0 nil (fringe))
+ '(inhibit-startup-screen t)
+ '(initial-scratch-message nil)
+ '(org-export-with-sub-superscripts nil)
+ '(tool-bar-mode nil)
+ '(word-wrap t))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+(persistent-scratch-setup-default)
