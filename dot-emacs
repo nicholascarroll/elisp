@@ -1,14 +1,14 @@
 (require 'package)
 (add-to-list 'package-archives
 	     '("melpa" . "https://melpa.org/packages/"))
-;(add-to-list 'package-archives
-;             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives
+	     '("org" . "http://orgmode.org/elpa/") t)
+(add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (add-to-list 'load-path "~/.emacs.d/misc")
 (package-initialize)
-(setq python-shell-interpreter "ipython"
-      python-shell-interpreter-args "-i")
-(require 'hideshow-org)
 
+(require 'hideshow-org)
 (require 'fill-column-indicator)
 
 (eval-after-load "org"
@@ -31,6 +31,7 @@
 
 ;;python autocompletion and doc lookup
 (add-hook 'python-mode-hook 'jedi:setup)
+
 (setq jedi:setup-keys t) ;this sets the default keys, which are:
 ;; <C-tab> : = jedi:key-complete
 ;; Complete code at point. (jedi:complete)
@@ -72,6 +73,51 @@
 (global-set-key (kbd "C-c w") 'night-mode)
 
 (add-to-list 'auto-mode-alist '("\\.fountain$" . fountain-mode))
+(global-set-key (kbd "C-C s") 'google-translate-at-point) 
+(global-set-key (kbd "C-C e") 'google-translate-at-point-reverse) 
+
+(require 'recentf)
+(recentf-mode 1)
+(setq recentf-max-menu-items 25)
+(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+
+;; make backup to a designated dir, mirroring the full path
+
+(defun my-backup-file-name (fpath)
+  "Return a new file path of a given file path.
+If the new path's directories does not exist, create them."
+  (let* (
+        (backupRootDir "~/.emacs.d/emacs-backup/")
+        (filePath (replace-regexp-in-string "[A-Za-z]:" "" fpath )) ; remove Windows driver letter in path, for example, “C:”
+        (backupFilePath (replace-regexp-in-string "//" "/" (concat backupRootDir filePath "~") ))
+        )
+    (make-directory (file-name-directory backupFilePath) (file-name-directory backupFilePath))
+    backupFilePath
+  )
+)
+
+(setq make-backup-file-name-function 'my-backup-file-name)
+
+;; transparent background toggle
+ (defun toggle-transparency ()
+   (interactive)
+   (let ((alpha (frame-parameter nil 'alpha)))
+     (set-frame-parameter
+      nil 'alpha
+      (if (eql (cond ((numberp alpha) alpha)
+                     ((numberp (cdr alpha)) (cdr alpha))
+                     ;; Also handle undocumented (<active> <inactive>) form.
+                     ((numberp (cadr alpha)) (cadr alpha)))
+               100)
+          '(85 . 50) '(100 . 100)))))
+(global-set-key (kbd "C-c t") 'toggle-transparency)
+
+;   ____  _     ____  _____  ____  _       
+;  /   _\/ \ /\/ ___\/__ __\/  _ \/ \__/|  
+;  |  /  | | |||    \  / \  | / \|| |\/||  
+;  |  \__| \_/|\___ |  | |  | \_/|| |  ||  
+;  \____/\____/\____/  \_/  \____/\_/  \|  
+;                                          
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -80,10 +126,18 @@
  '(ac-auto-start nil)
  '(column-number-mode t)
  '(cua-mode t nil (cua-base))
+ '(fountain-export-use-title-as-filename nil)
  '(fringe-mode 0 nil (fringe))
+ '(google-translate-default-source-language "en")
+ '(google-translate-default-target-language "es")
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
  '(org-export-with-sub-superscripts nil)
+ '(org-modules
+   (quote
+    (org-bbdb org-bibtex org-docview org-gnus org-info org-irc org-mhe org-rmail org-w3m)))
+ '(python-shell-interpreter "ipython")
+ '(python-shell-interpreter-args "--simple-prompt -i")
  '(tool-bar-mode nil)
  '(word-wrap t))
 (custom-set-faces
@@ -94,3 +148,5 @@
  )
 
 (persistent-scratch-setup-default)
+
+(put 'downcase-region 'disabled nil)
