@@ -30,23 +30,11 @@
 
 (prefer-coding-system 'utf-8)
 
-;; HIDESHOW MODE SETTINGS
+;;FOLDING FOR VIEWING XML FILES
 (require 'hideshow)
-(defun my-hs-minor-mode-keys ()
-  "my keys for `hs-minor-mode'."
-  (interactive)
-    (local-set-key (kbd "C-c <right>") 'hs-show-block)
-    (local-set-key (kbd "C-c <left>")  'hs-hide-block)
-    (local-set-key (kbd "C-c <up>")    'hs-hide-all)
-    (local-set-key (kbd "C-c <down>")  'hs-show-all)
-  )
-(add-hook 'hs-minor-mode-hook 'my-hs-minor-mode-keys)
-(add-hook 'c-mode-common-hook 'hs-minor-mode)
-(add-hook 'python-mode-hook 'hs-minor-mode)
-
-;; Hideshow Settings For NXML Mode
 (require 'sgml-mode)
 (require 'nxml-mode)
+
  (add-to-list 'hs-special-modes-alist
                   '(nxml-mode
  		 "<!--\\|<[^/>]*[^/]>"
@@ -56,6 +44,18 @@
  		 sgml-skip-tag-forward
  		 nil))
 (add-hook 'nxml-mode-hook 'hs-minor-mode)
+(add-hook 'c-mode-common-hook 'hs-minor-mode)
+(add-hook 'python-mode-hook 'hs-minor-mode)
+
+;; FOLDING KEYBINDINGS FOR HIDESHOW MODE
+(add-hook 'hs-minor-mode-hook
+  (lambda()
+    (local-set-key (kbd "C-c <right>") 'hs-show-block)
+    (local-set-key (kbd "C-c <left>")  'hs-hide-block)
+    (local-set-key (kbd "C-c <up>")    'hs-hide-all)
+    (local-set-key (kbd "C-c <down>")  'hs-show-all)))
+
+;;(put 'dired-find-alternate-file 'disabled nil)
 
 ;; LAUNCH INTO THE WAK ASS ZEAL SYSTEM MAINLY COS PYSIDE 1 GOT NO DOCSTRINGS
 (require 'zeal-at-point)
@@ -105,8 +105,9 @@ If the new path's directories does not exist, create them."
         (backupFilePath (replace-regexp-in-string "//" "/" (concat backupRootDir filePath "~") ))
         )
     (make-directory (file-name-directory backupFilePath) (file-name-directory backupFilePath))
-    backupFilePath))
-
+    backupFilePath
+  )
+  )
 (setq make-backup-file-name-function 'my-backup-file-name)
 
 ;; JEDI SETTINGS
@@ -131,41 +132,13 @@ If the new path's directories does not exist, create them."
   )
 (add-hook 'python-mode-hook 'jedi-keybindings)
 
-;; COMPANY MODE SETTINGS
+;; COMPANY MODE
 (require 'company)
-(global-set-key (kbd "<C-tab>") 'company-complete)
-(setq company-require-match nil)
-
-;; COMPANY-JEDI
-(add-hook 'python-mode-hook 'company-mode)
-(push 'company-jedi company-backends)
-
-;; FLYCHECK FOR RTAGS
-(defun setup-flycheck-rtags ()
-  (interactive)
-  (flycheck-select-checker 'rtags)
-  (setq-local flycheck-highlighting-mode nil)
-  (setq-local flycheck-check-syntax-automatically nil))
-
-;; COMPANY-RTAGS
-(when (require 'rtags nil :noerror)
-  (define-key c-mode-base-map (kbd "M-.")
-    (function rtags-find-symbol-at-point))
-  (define-key c-mode-base-map (kbd "M-,")
-    (function rtags-location-stack-back))
-  (rtags-enable-standard-keybindings) 
-  (setq rtags-autostart-diagnostics t)
-  (setq rtags-completions-enabled t)
-  (rtags-start-process-unless-running)
+  (push 'company-jedi company-backends)
+  (setq company-require-match nil)
   ;;(setq company-dabbrev-downcase nil) ;uncomment if getting case problems
-  (add-hook 'c++-mode-hook 'company-mode)
-  (push 'company-rtags company-backends)
-  ;; flycheck-rtags shows clang warnings inline
-  (require 'flycheck-rtags)
-  (add-hook 'c++-mode-hook #'setup-flycheck-rtags))
-
-;; MAGIT 
-(global-set-key (kbd "C-c g") 'magit-status)
+  (add-hook 'python-mode-hook 'company-mode)
+  (global-set-key (kbd "<C-tab>") 'company-complete)
 
 ;; FILL COLUMN INDICATOR FOR PYTHON
 (require 'fill-column-indicator)
