@@ -165,6 +165,7 @@ If the new path's directories does not exist, create them."
  '(ac-auto-start nil)
  '(column-number-mode t)
  '(company-idle-delay nil)
+ '(company-require-match nil)
  '(cua-mode t nil (cua-base))
  '(fountain-export-use-title-as-filename nil)
  '(fringe-mode 0 nil (fringe))
@@ -184,7 +185,15 @@ If the new path's directories does not exist, create them."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(company-preview ((t (:background "gray" :foreground "black"))))
+ '(company-preview-common ((t (:inherit company-preview :foreground "black"))))
+ '(company-scrollbar-bg ((t (:background "dark gray"))))
+ '(company-scrollbar-fg ((t (:background "tomato4"))))
+ '(company-template-field ((t (:background "dim gray" :foreground "black"))))
+ '(company-tooltip ((t (:background "dim gray" :foreground "black"))))
+ '(company-tooltip-annotation ((t (:foreground "dark red"))))
+ '(company-tooltip-common ((t (:foreground "dark red"))))
+ '(company-tooltip-selection ((t (:background "gray")))))
 
 (persistent-scratch-setup-default)
 
