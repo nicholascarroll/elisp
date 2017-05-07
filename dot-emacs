@@ -57,12 +57,6 @@
 
 ;;(put 'dired-find-alternate-file 'disabled nil)
 
-;; LAUNCH INTO THE WAK ASS ZEAL SYSTEM MAINLY COS PYSIDE 1 GOT NO DOCSTRINGS
-(require 'zeal-at-point)
-(global-set-key (kbd "<f2>") 'zeal-at-point)
-(add-to-list 'zeal-at-point-mode-alist '(python-mode . ("python" "pyside")))
-(add-to-list 'zeal-at-point-mode-alist '(c++-mode . ("cpp" "qt")))
-
 ;; MIDNIGHT CODER MODE
 (defun night-mode ()
   (interactive)
