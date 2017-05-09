@@ -116,51 +116,54 @@ If the new path's directories does not exist, create them."
   )
 (setq make-backup-file-name-function 'my-backup-file-name)
 
-;; JEDI SETTINGS
-(defvar jedi:goto-stack '())
-(defun jedi:jump-to-definition ()
-  (interactive)
-  (add-to-list 'jedi:goto-stack
-               (list (buffer-name) (point)))
-  (jedi:goto-definition))
-(defun jedi:jump-back ()
-  (interactive)
-  (let ((p (pop jedi:goto-stack)))
-    (if p (progn
-            (switch-to-buffer (nth 0 p))
-            (goto-char (nth 1 p))))))
+;; C++ MODE
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+(global-set-key (kbd "C-c f") 'ff-find-other-file)
 
-(defun jedi-keybindings ()
-  (local-set-key (kbd "M-.") 'jedi:jump-to-definition)
-  (local-set-key (kbd "M-,") 'jedi:jump-back)
-  (local-set-key (kbd "C-c d") 'jedi:show-doc)
-  ;;(local-set-key (kbd "C-tab") 'jedi:complete)
-  )
-(add-hook 'python-mode-hook 'jedi-keybindings)
-
-;; COMPANY MODE
+;; COMPANY MODE SETTINGS
 (require 'company)
-  (push 'company-jedi company-backends)
-  (setq company-require-match nil)
-  ;;(setq company-dabbrev-downcase nil) ;uncomment if getting case problems
-  (add-hook 'python-mode-hook 'company-mode)
-  (global-set-key (kbd "<C-tab>") 'company-complete)
+(global-set-key (kbd "<C-tab>") 'company-complete)
+(define-key company-active-map (kbd "<tab>") 'company-complete-selection)
+(setq company-require-match nil)
 
-;; FILL COLUMN INDICATOR FOR PYTHON
-(require 'fill-column-indicator)
-(add-hook 'python-mode-hook 'fci-mode)
-(setq fci-rule-column 80)
-;;workaround for bug between company mode and fill-column-indicator
-(defvar-local company-fci-mode-on-p nil)
-(defun company-turn-off-fci (&rest ignore)
-  (when (boundp 'fci-mode)
-    (setq company-fci-mode-on-p fci-mode)
-    (when fci-mode (fci-mode -1))))
-(defun company-maybe-turn-on-fci (&rest ignore)
-  (when company-fci-mode-on-p (fci-mode 1)))
-(add-hook 'company-completion-started-hook 'company-turn-off-fci)
-(add-hook 'company-completion-finished-hook 'company-maybe-turn-on-fci)
-(add-hook 'company-completion-cancelled-hook 'company-maybe-turn-on-fci)
+
+;; COMPANY-JEDI
+(add-hook 'python-mode-hook 'company-mode)
+(push 'company-jedi company-backends)
+
+;; FLYCHECK FOR RTAGS
+(defun setup-flycheck-rtags ()
+  (interactive)
+  (flycheck-select-checker 'rtags)
+  (setq-local flycheck-highlighting-mode nil)
+  (setq-local flycheck-check-syntax-automatically nil))
+
+;; COMPANY-RTAGS
+(when (require 'rtags nil :noerror)
+  (define-key c-mode-base-map (kbd "M-.")
+    (function rtags-find-symbol-at-point))
+  (define-key c-mode-base-map (kbd "M-,")
+    (function rtags-location-stack-back))
+  (rtags-enable-standard-keybindings) 
+  (setq rtags-autostart-diagnostics t)
+  (setq rtags-completions-enabled t)
+  (rtags-start-process-unless-running)
+  ;;(setq company-dabbrev-downcase nil) ;uncomment if getting case problems
+  (add-hook 'c++-mode-hook 'company-mode)
+  (push 'company-rtags company-backends)
+  ;;flycheck-rtags shows clang warnings inline
+  (require 'flycheck-rtags)
+  (add-hook 'c++-mode-hook #'setup-flycheck-rtags))
+
+
+;; MAGIT
+(global-set-key (kbd "C-c g") 'magit-status)
+
+;; LAUNCH INTO ZEAL MAINLY COS PYSIDE 1 GOT NO DOCSTRINGS
+(require 'zeal-at-point)
+(global-set-key (kbd "<f2>") 'zeal-at-point)
+(add-to-list 'zeal-at-point-mode-alist '(python-mode . ("python" "pyside")))
+(add-to-list 'zeal-at-point-mode-alist '(c++-mode . ("cpp" "qt")))
 
 
 ;   ____  _     ____  _____  ____  _       
@@ -197,7 +200,7 @@ If the new path's directories does not exist, create them."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(company-template-field ((t (:background "wheat" :foreground "black")))))
 
 (persistent-scratch-setup-default)
 
