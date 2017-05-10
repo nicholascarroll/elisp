@@ -126,10 +126,35 @@ If the new path's directories does not exist, create them."
 (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
 (setq company-require-match nil)
 
+;; JEDI SETTINGS
+(defvar jedi:goto-stack '())
+(defun jedi:jump-to-definition ()
+  (interactive)
+  (add-to-list 'jedi:goto-stack
+               (list (buffer-name) (point)))
+  (jedi:goto-definition))
+(defun jedi:jump-back ()
+  (interactive)
+  (let ((p (pop jedi:goto-stack)))
+    (if p (progn
+            (switch-to-buffer (nth 0 p))
+            (goto-char (nth 1 p))))))
+
+(defun jedi-keybindings ()
+  (local-set-key (kbd "M-.") 'jedi:jump-to-definition)
+  (local-set-key (kbd "M-,") 'jedi:jump-back)
+  (local-set-key (kbd "C-c d") 'jedi:show-doc))
+(add-hook 'python-mode-hook 'jedi-keybindings)
 
 ;; COMPANY-JEDI
+;;(defun yoda ()
+;;  (add-to-list 'company-backends 'company-jedi))
+;;(add-hook 'python-mode-hook 'yoda)
 (add-hook 'python-mode-hook 'company-mode)
 (push 'company-jedi company-backends)
+(add-hook 'inferior-python-mode-hook 'company-mode)
+
+(add-hook 'python-mode-hook #'flycheck-mode)
 
 ;; FLYCHECK FOR RTAGS
 (defun setup-flycheck-rtags ()
