@@ -21,10 +21,7 @@
  '((python . t))) 
 (setq org-confirm-babel-evaluate nil)   ;don't confirm code block evals in org
 
-(global-set-key (kbd "C-c o") 'org-mode)
-
 ;; BIBLE MODE
-(global-set-key (kbd "C-c b") 'bible-mode)
 (setq diatheke-bible "WEB") 
 (require 'bible)
 
@@ -75,7 +72,6 @@
  '(company-tooltip-selection ((t (:background "gray"))))
  )
     ))
-(global-set-key (kbd "C-c w") 'night-mode)
 
 ;; TRANSPARENT BACKGROUND TOGGLE
  (defun toggle-transparency ()
