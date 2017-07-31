@@ -121,15 +121,9 @@ If the new path's directories does not exist, create them."
 (add-hook 'diff-mode-hook (lambda () (setq truncate-lines t)))
 ;; COMPANY MODE SETTINGS
 (require 'company)
-;; (defun complete-or-indent ()
-;;   (interactive)
-;;   (if (company-manual-begin)
-;;       (company-complete-common)
-;;     (indent-according-to-mode)))
 (add-hook `company-mode-hook
 	  (lambda()
 	    (local-set-key (kbd "TAB") #'company-indent-or-complete-common)))
-;;(global-set-key (kbd "<C-tab>") 'company-complete)
 (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
 (setq company-require-match nil)
 
