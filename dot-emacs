@@ -123,7 +123,7 @@ If the new path's directories does not exist, create them."
 (require 'company)
 (add-hook `company-mode-hook
 	  (lambda()
-	    (local-set-key (kbd "TAB") #'company-indent-or-complete-common)))
+	    (local-set-key (kbd "<C-tab>") #'company-complete-common)))
 (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
 (setq company-require-match nil)
 
