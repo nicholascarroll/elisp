@@ -90,6 +90,11 @@
 
 ;; FOUNTAIN MODE SETTINGS
 (add-to-list 'auto-mode-alist '("\\.ftn$" . fountain-mode))
+(add-hook 'fountain-mode-hook
+	  (lambda()
+	    (local-set-key (kbd "<C-tab>") 'dabbrev-expand)))
+
+;; TRANSLATION
 (global-set-key (kbd "C-C s") 'google-translate-at-point) 
 (global-set-key (kbd "C-C e") 'google-translate-at-point-reverse) 
 
@@ -121,11 +126,18 @@ If the new path's directories does not exist, create them."
 (add-hook 'diff-mode-hook (lambda () (setq truncate-lines t)))
 ;; COMPANY MODE SETTINGS
 (require 'company)
+(defun nc-company-complete-or-indent ()
+  (interactive)
+  (if  (or (bolp) (equal (string(char-before)) " " ))
+      (call-interactively #'indent-for-tab-command)
+      (company-complete-common)))
 (add-hook `company-mode-hook
 	  (lambda()
-	    (local-set-key (kbd "TAB") #'company-indent-or-complete-common)))
+	    (local-set-key (kbd "<C-tab>") #'company-complete-common)
+	    (local-set-key (kbd "<tab>") #'nc-company-complete-or-indent)))
 (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
 (setq company-require-match nil)
+(add-hook 'emacs-lisp-mode-hook 'company-mode)
 
 ;; JEDI SETTINGS
 (defvar jedi:goto-stack '())
