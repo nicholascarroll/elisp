@@ -92,9 +92,9 @@
 	  (lambda()
 	    (local-set-key (kbd "<C-tab>") 'dabbrev-expand)))
 
-;; TRANSLATION ENGLISH - SPANISH
-(global-set-key (kbd "<f6>") 'google-translate-at-point) 
-(global-set-key (kbd "<f7>") 'google-translate-at-point-reverse) 
+;; TRANSLATION
+(global-set-key (kbd "C-C s") 'google-translate-at-point) 
+(global-set-key (kbd "C-C e") 'google-translate-at-point-reverse) 
 
 ;; RECENT FILES MENU
 (require 'recentf)
