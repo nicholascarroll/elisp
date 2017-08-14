@@ -41,9 +41,7 @@
  		 sgml-skip-tag-forward
  		 nil))
 (add-hook 'nxml-mode-hook 'hs-minor-mode)
-(add-hook 'c-mode-common-hook 'hs-minor-mode)
 (add-hook 'python-mode-hook 'hs-minor-mode)
-(add-hook 'qml-mode-hook 'hs-minor-mode)
 
 ;; FOLDING KEYBINDINGS FOR HIDESHOW MODE
 (add-hook 'hs-minor-mode-hook
@@ -120,10 +118,6 @@ If the new path's directories does not exist, create them."
   )
 (setq make-backup-file-name-function 'my-backup-file-name)
 
-;; C++ MODE
-(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
-(global-set-key (kbd "C-c f") 'ff-find-other-file)
-(add-hook 'diff-mode-hook (lambda () (setq truncate-lines t)))
 ;; COMPANY MODE SETTINGS
 (require 'company)
 (defun nc-company-complete-or-indent ()
@@ -169,50 +163,8 @@ If the new path's directories does not exist, create them."
 
 ;;(add-hook 'python-mode-hook #'flycheck-mode)
 
-;; FLYCHECK FOR RTAGS
-(defun setup-flycheck-rtags ()
-  (interactive)
-  (flycheck-select-checker 'rtags)
-  (setq-local flycheck-highlighting-mode nil)
-  (setq-local flycheck-check-syntax-automatically nil))
-
-;; COMPANY-RTAGS
-(when (require 'rtags nil :noerror)
-  (define-key c-mode-base-map (kbd "M-.")
-    (function rtags-find-symbol-at-point))
-  (define-key c-mode-base-map (kbd "M-,")
-    (function rtags-location-stack-back))
-  (rtags-enable-standard-keybindings) 
-  (setq rtags-autostart-diagnostics t)
-  (setq rtags-completions-enabled t)
-  (rtags-start-process-unless-running)
-  ;;(setq company-dabbrev-downcase nil) ;uncomment if getting case problems
-  (add-hook 'c++-mode-hook 'company-mode)
-  (push 'company-rtags company-backends)
-  ;;flycheck-rtags shows clang warnings inline
-  (require 'flycheck-rtags)
-  (add-hook 'c++-mode-hook #'setup-flycheck-rtags))
-
-
 ;; MAGIT
 (global-set-key (kbd "C-c g") 'magit-status)
-
-;; LAUNCH INTO ZEAL MAINLY COS PYSIDE 1 GOT NO DOCSTRINGS
-(require 'zeal-at-point)
-(global-set-key (kbd "<f1>") 'zeal-at-point)
-(add-to-list 'zeal-at-point-mode-alist '(python-mode . ("python" "pyside")))
-(add-to-list 'zeal-at-point-mode-alist '(c++-mode . ("cpp" "qt")))
-
-;; QML MODE
-(autoload 'qml-mode "qml-mode" "Editing Qt Declarative." t)
-(add-to-list 'auto-mode-alist '("\\.qml$" . qml-mode))
-;;(add-to-list 'company-backends 'company-qml)
-(add-hook 'qml-mode-hook 'company-mode)
-(push 'company-qml company-backends)
-
-;; QMAKE MODE
-(require 'qt-pro)
-(add-to-list 'auto-mode-alist '("\\.pr[io]$" . qt-pro-mode))
 
 ;; FILL COLUMN INDICATOR FOR PYTHON
 (require 'fill-column-indicator)
