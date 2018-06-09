@@ -22,7 +22,7 @@
 (setq org-confirm-babel-evaluate nil)   ;don't confirm code block evals in org
 
 ;; BIBLE MODE
-(setq diatheke-bible "WEB") 
+(setq diatheke-bible "KJV") 
 (require 'bible)
 
 (prefer-coding-system 'utf-8)
